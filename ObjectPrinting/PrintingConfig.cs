@@ -9,8 +9,10 @@ public class PrintingConfig<TOwner>
 {
     internal Dictionary<Type, Func<object, string?>> TypeSerializers { get; } = new();
     internal Dictionary<string, Func<object, string>> PropertySerializers { get; } = new();
-    private HashSet<Type> ExcludedTypes { get; } = new();
-    private HashSet<string> ExcludedProperties { get; } = new();
+    private HashSet<Type> ExcludedTypes { get; } = [];
+    private HashSet<string> ExcludedProperties { get; } = [];
+    
+    private readonly HashSet<object> visited = [];
     internal Dictionary<string, int> StringTrimmingRules { get; } = new();
 
     public PrintingConfig<TOwner> Excluding<TProp>()
@@ -18,7 +20,6 @@ public class PrintingConfig<TOwner>
         ExcludedTypes.Add(typeof(TProp));
         return this;
     }
-
     public PrintingConfig<TOwner> Excluding(Expression<Func<TOwner, object>> selector)
     {
         ExcludedProperties.Add(GetPropertyName(selector));
@@ -36,7 +37,7 @@ public class PrintingConfig<TOwner>
         return new PropertyPrintingConfig<TOwner, TProp>(this, selector);
     }
 
-    internal string GetPropertyName<TProp>(Expression<Func<TOwner, TProp>> selector)
+    internal static string GetPropertyName<TProp>(Expression<Func<TOwner, TProp>> selector)
     {
         return selector.Body switch
         {
@@ -57,6 +58,20 @@ public class PrintingConfig<TOwner>
     {
         var type = obj.GetType();
         
+        if (obj == null)
+        {
+            sb.Append("null");
+            return;
+        }
+
+        if (visited.Contains(obj))
+        {
+            sb.Append("<cyclic reference>");
+            return;
+        }
+        
+        visited.Add(obj);
+        
         if (ExcludedTypes.Contains(type))
             return;
         
@@ -66,7 +81,7 @@ public class PrintingConfig<TOwner>
             return;
         }
         
-        if (type.IsPrimitive || obj is string)
+        if (type.IsPrimitive || obj is string || type.GetProperties().Length == 0)
         {
             sb.Append(obj);
             return;
@@ -77,8 +92,9 @@ public class PrintingConfig<TOwner>
         foreach (var prop in type.GetProperties())
         {
             var name = prop.Name;
-
-            if (ExcludedProperties.Contains(name))
+            var propType = prop.PropertyType;
+            
+            if (ExcludedProperties.Contains(name) || ExcludedTypes.Contains(propType))
                 continue;
 
             var value = prop.GetValue(obj);
@@ -95,7 +111,7 @@ public class PrintingConfig<TOwner>
             if (value is string s &&
                 StringTrimmingRules.TryGetValue(name, out var max))
             {
-                sb.AppendLine(s.Length <= max ? s : s.Substring(0, max));
+                sb.AppendLine(s.Length <= max ? s : s[..max]);
                 continue;
             }
 

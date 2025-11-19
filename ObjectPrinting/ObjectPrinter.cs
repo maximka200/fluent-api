@@ -6,4 +6,10 @@ public static class ObjectPrinter
     {
         return new PrintingConfig<T>();
     }
+    
+    public static string PrintToString<TOwner>(object obj)
+    {
+        var printer = new PrintingConfig<TOwner>();
+        return printer.PrintToString((TOwner)obj);
+    }
 }

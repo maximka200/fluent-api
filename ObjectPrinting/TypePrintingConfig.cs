@@ -4,7 +4,7 @@ namespace ObjectPrinting;
 
 public class TypePrintingConfig<TOwner, TProp>(PrintingConfig<TOwner> parent)
 {
-    public PrintingConfig<TOwner> ParentConfig { get; } = parent;
+    private PrintingConfig<TOwner> ParentConfig { get; } = parent;
 
     public PrintingConfig<TOwner> Using(Func<TProp, string> serializer)
     {
