@@ -1,0 +1,18 @@
+Person:
+	Name = John
+	Scores = Int32[] [
+		10
+		20
+	]
+	Tags = List`1 [
+		dev
+		qa
+	]
+	Addresses = Dictionary`2 {
+		[home] = Address:
+			City = Chelyabinsk
+
+		[work] = Address:
+			City = Sverdlovsk
+
+	}

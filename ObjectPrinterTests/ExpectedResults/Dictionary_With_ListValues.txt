@@ -1,0 +1,9 @@
+Dictionary`2 {
+	[first] = List`1 [
+		1
+		2
+	]
+	[second] = List`1 [
+		3
+	]
+}

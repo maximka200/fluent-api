@@ -1,0 +1,27 @@
+Team:
+	Title = My_Command
+	Members = List`1 [
+		Person:
+			Name = Max
+			Scores = Int32[] [
+				1
+			]
+			Tags = List`1 [
+				dev
+			]
+			Addresses = Dictionary`2 {
+			}
+
+		Person:
+			Name = Kate
+			Scores = Int32[] [
+				2
+				3
+			]
+			Tags = List`1 [
+				qa
+			]
+			Addresses = Dictionary`2 {
+			}
+
+	]

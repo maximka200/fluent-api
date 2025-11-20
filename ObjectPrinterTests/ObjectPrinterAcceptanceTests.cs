@@ -8,6 +8,16 @@ namespace ObjectPrinting.Tests
     [TestFixture]
     public class ObjectPrinterAcceptanceTests
     {
+        private class Person
+        {
+            public Guid Id { get; set; }
+            public string Name { get; set; }
+            public double Height { get; set; }
+            public int Age { get; set; }
+        
+            public Person Child { get; set; }  
+        }
+        
         [Test]
         public void Demo()
         {
@@ -50,10 +60,9 @@ namespace ObjectPrinting.Tests
         }
         
         [Test]
-        public void Should_Exclude_Type_From_Serialization()
+        public void ShouldExcludeType_FromSerialization()
         {
             var obj = new A { Id = Guid.NewGuid(), Name = "Alex" };
-
             var printer = ObjectPrinter.For<A>()
                 .Excluding<Guid>();
 
@@ -63,10 +72,9 @@ namespace ObjectPrinting.Tests
         }
         
         [Test]
-        public void Should_Use_Custom_Serialization_For_Type()
+        public void ShouldUseCustomSerialization_ForType()
         {
             var obj = new A { Number = 42 };
-
             var printer = ObjectPrinter.For<A>()
                 .Printing<int>()
                 .Using(x => $"INT({x})");
@@ -77,13 +85,12 @@ namespace ObjectPrinting.Tests
         }
         
         [Test]
-        public void Should_Apply_CultureInfo_To_Type()
+        public void ShouldApplyCultureInfo_ToType()
         {
             var obj = new A { Price = 1234.56 };
-
             var printer = ObjectPrinter.For<A>()
                 .Printing<double>()
-                .Using(CultureInfo.GetCultureInfo("fr-FR")); // 1234,56
+                .Using(CultureInfo.GetCultureInfo("fr-FR"));
 
             var result = printer.PrintToString(obj);
 
@@ -91,10 +98,9 @@ namespace ObjectPrinting.Tests
         }
         
         [Test]
-        public void Should_Apply_Custom_Serialization_To_Specific_Property()
+        public void ShouldApplyСustomSerialization_ToProperty()
         {
             var obj = new A { Name = "Alex" };
-
             var printer = ObjectPrinter.For<A>()
                 .Printing(a => a.Name)
                 .Using(n => $"NAME={n}");
@@ -105,10 +111,9 @@ namespace ObjectPrinting.Tests
         }
         
         [Test]
-        public void Should_Trim_String_Property()
+        public void ShouldTrimString_Property()
         {
             var obj = new A { Name = "Alexander" };
-
             var printer = ObjectPrinter.For<A>()
                 .Printing(a => a.Name)
                 .TrimmedToLength(4);
@@ -120,34 +125,30 @@ namespace ObjectPrinting.Tests
         }
         
         [Test]
-        public void Should_Exclude_Specific_Property()
+        public void ShouldExcludeSpecific_Property()
         {
             var obj = new A { Name = "Alex", Number = 10 };
-
             var printer = ObjectPrinter.For<A>()
                 .Excluding(a => a.Number);
-
+            
             var result = printer.PrintToString(obj);
 
             result.Should().NotContain(nameof(A.Number));
         }
         
         [Test]
-        public void Should_Handle_Cyclic_References()
+        public void ShouldHandleCyclicReferences_InProperty()
         {
             var parent = new B();
             var child = new B { Parent = parent };
             parent.Data = new A { Name = "Child" };
             parent.Parent = child;
-
             var printer = ObjectPrinter.For<B>();
 
-            Action act = () => printer.PrintToString(parent);
-
-            act.Should().NotThrow();
-
+            var act = () => printer.PrintToString(parent);
             var result = printer.PrintToString(parent);
-
+            
+            act.Should().NotThrow();
             result.Should().Contain("<cyclic reference>");
         }
     }
