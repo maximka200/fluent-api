@@ -6,43 +6,6 @@ using ObjectPrinting.Extensions;
 namespace ObjectPrinterTests
 {
     [TestFixture]
-    public class ObjectPrinterAcceptanceTests
-    {
-        private class Person
-        {
-            public Guid Id { get; set; }
-            public string Name { get; set; }
-            public double Height { get; set; }
-            public int Age { get; set; }
-        
-            public Person Child { get; set; }  
-        }
-        
-        [Test]
-        public void Demo()
-        {
-            var person = new Person {Id = new Guid(), Name = "Alex", Age = 112, Height = 1.89,
-                Child = new Person {Id = new Guid(), Name = "Roman", Age = 5, Height = 1.0}
-            };
-            
-            var printer = ObjectPrinter.For<Person>()
-                .Printing<int>().Using(x => (x - 1).ToString())
-                .Printing<double>().Using(CultureInfo.InvariantCulture)
-                .Printing(p => p.Name).TrimmedToLength(3)
-                .Excluding(p => p.Id)
-                .Excluding<Guid>();
-            
-            //7. Синтаксический сахар в виде метода расширения, сериализующего по-умолчанию  
-            var s2 = ObjectPrinter.PrintToString<Person>(person);
-            //8. ...с конфигурированием
-            var s1 = printer.PrintToString(person);
-            
-            Console.WriteLine(s1);
-            Console.WriteLine("-----");
-            Console.WriteLine(s2);
-        }
-    }
-    [TestFixture]
     public class ObjectPrinterTests
     {
         private class A

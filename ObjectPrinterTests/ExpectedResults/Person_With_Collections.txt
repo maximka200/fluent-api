@@ -4,11 +4,11 @@ Person:
 		10
 		20
 	]
-	Tags = List`1 [
+	Tags = List<String> [
 		dev
 		qa
 	]
-	Addresses = Dictionary`2 {
+	Addresses = Dictionary<String, Address> {
 		[home] = Address:
 			City = Chelyabinsk
 

@@ -1,4 +1,4 @@
-List`1 [
+List<String> [
 	one
 	two
 ]

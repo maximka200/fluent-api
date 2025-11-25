@@ -1,15 +1,15 @@
 Team:
 	Title = My_Command
-	Members = List`1 [
+	Members = List<Person> [
 		Person:
 			Name = Max
 			Scores = Int32[] [
 				1
 			]
-			Tags = List`1 [
+			Tags = List<String> [
 				dev
 			]
-			Addresses = Dictionary`2 {
+			Addresses = Dictionary<String, Address> {
 			}
 
 		Person:
@@ -18,10 +18,10 @@ Team:
 				2
 				3
 			]
-			Tags = List`1 [
+			Tags = List<String> [
 				qa
 			]
-			Addresses = Dictionary`2 {
+			Addresses = Dictionary<String, Address> {
 			}
 
 	]
