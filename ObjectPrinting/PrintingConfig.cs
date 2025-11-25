@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
+using ObjectPrinting.Configs;
+using ObjectPrinting.Extensions;
 
 namespace ObjectPrinting;
 
@@ -22,7 +23,7 @@ public class PrintingConfig<TOwner>
     }
     public PrintingConfig<TOwner> Excluding(Expression<Func<TOwner, object>> selector)
     {
-        ExcludedProperties.Add(GetPropertyName(selector));
+        ExcludedProperties.Add(PrintingConfigExtensions.GetPropertyName(selector));
         return this;
     }
 
@@ -35,24 +36,5 @@ public class PrintingConfig<TOwner>
         Expression<Func<TOwner, TProp>> selector)
     {
         return new PropertyPrintingConfig<TOwner, TProp>(this, selector);
-    }
-
-    internal static string GetPropertyName<TProp>(Expression<Func<TOwner, TProp>> selector)
-    {
-        return selector.Body switch
-        {
-            MemberExpression m => m.Member.Name,
-            UnaryExpression { Operand: MemberExpression m2 } => m2.Member.Name,
-            _ => throw new ArgumentException("Expression must be a property")
-        };
-    }
-
-    public string PrintToString(TOwner obj)
-    {
-        var sb = new StringBuilder();
-        Visited.Clear();
-        if (obj != null)
-            obj.Print(this, sb, 0);
-        return sb.ToString();
     }
 }

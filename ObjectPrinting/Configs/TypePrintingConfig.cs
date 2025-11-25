@@ -1,6 +1,6 @@
 using System;
 
-namespace ObjectPrinting;
+namespace ObjectPrinting.Configs;
 
 public class TypePrintingConfig<TOwner, TProp>(PrintingConfig<TOwner> parent)
 {

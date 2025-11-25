@@ -1,13 +1,14 @@
 using System;
 using System.Linq.Expressions;
+using ObjectPrinting.Extensions;
 
-namespace ObjectPrinting;
+namespace ObjectPrinting.Configs;
 
 public class PropertyPrintingConfig<TOwner, TProp>(
     PrintingConfig<TOwner> parent,
     Expression<Func<TOwner, TProp>> selector)
 {
-    private readonly string propertyName = PrintingConfig<TOwner>.GetPropertyName(selector);
+    private readonly string propertyName = PrintingConfigExtensions.GetPropertyName(selector);
 
     public PrintingConfig<TOwner> Using(Func<TProp, string> serializer)
     {

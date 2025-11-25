@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Text;
 
-namespace ObjectPrinting;
+namespace ObjectPrinting.Extensions;
 
 public static class CollectionPrintingExtensions
 {
