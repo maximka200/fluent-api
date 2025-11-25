@@ -1,4 +1,4 @@
-using FluentAssertions;
+using ObjectPrinterTests.Entities;
 using ObjectPrinting;
 using ObjectPrinting.Extensions;
 
@@ -7,51 +7,38 @@ namespace ObjectPrinterTests;
 [TestFixture]
 public class CollectionPrintingSnapshotTests
 {
-    private class Address
+    private static readonly VerifySettings SnapshotSettings;
+    
+    static CollectionPrintingSnapshotTests()
     {
-        public string City { get; set; } = "";
+        SnapshotSettings = new VerifySettings();
+        SnapshotSettings.UseDirectory("ExpectedResults");
     }
-
-    private class Person
-    {
-        public string Name { get; set; } = "";
-        public int[] Scores { get; set; } = [];
-        public List<string> Tags { get; set; } = [];
-        public Dictionary<string, Address> Addresses { get; set; } = new();
-    }
-
-    private class Team
-    {
-        public string Title { get; set; } = "";
-        public List<Person> Members { get; set; } = new();
-    }
-
+    
     [Test]
-    public void IntArray_Snapshot()
+    public Task IntArray_Snapshot()
     {
         var config = new PrintingConfig<int[]>();
         var value = new[] { 1, 2, 3 };
-        
+
         var actual = config.PrintToString(value);
-        var expected = Helper.Read("IntArray.txt");
-        
-        actual.Should().Be(expected);
+
+        return Verify(actual, SnapshotSettings);
     }
 
     [Test]
-    public void StringList_Snapshot()
+    public Task PrintToString_StringList_ShouldHandleCorrect()
     {
         var config = new PrintingConfig<List<string>>();
         var value = new List<string> { "one", "two" };
 
         var actual = config.PrintToString(value);
-        var expected = Helper.Read("StringList.txt");
 
-        actual.Should().Be(expected);
+        return Verify(actual, SnapshotSettings);
     }
 
     [Test]
-    public void Dictionary_Primitive_Snapshot()
+    public Task PrintToString_Dictionary_ShouldHandleCorrect()
     {
         var config = new PrintingConfig<Dictionary<string, int>>();
         var value = new Dictionary<string, int>
@@ -61,13 +48,12 @@ public class CollectionPrintingSnapshotTests
         };
 
         var actual = config.PrintToString(value);
-        var expected = Helper.Read("Dictionary_Primitive.txt");
 
-        actual.Should().Be(expected);
+        return Verify(actual, SnapshotSettings);
     }
 
     [Test]
-    public void PersonWithCollections_Snapshot()
+    public Task PrintToString_ShouldHandleClassWithCollections_Correctly()
     {
         var config = new PrintingConfig<Person>();
         var person = new Person
@@ -83,13 +69,12 @@ public class CollectionPrintingSnapshotTests
         };
 
         var actual = config.PrintToString(person);
-        var expected = Helper.Read("Person_With_Collections.txt");
 
-        actual.Should().Be(expected);
+        return Verify(actual, SnapshotSettings);
     }
 
     [Test]
-    public void List_Of_Lists_Snapshot()
+    public Task PrintToString_ShouldHandleListOfLists_Correctly()
     {
         var config = new PrintingConfig<List<List<int>>>();
         var value = new List<List<int>>
@@ -99,13 +84,12 @@ public class CollectionPrintingSnapshotTests
         };
 
         var actual = config.PrintToString(value);
-        var expected = Helper.Read("List_Of_Lists.txt");
 
-        actual.Should().Be(expected);
+        return Verify(actual, SnapshotSettings);
     }
 
     [Test]
-    public void DictionaryWithListValues_Snapshot()
+    public Task PrintToString_ShouldHandleDictionaryWithListValues_Correctly()
     {
         var config = new PrintingConfig<Dictionary<string, List<int>>>();
         var value = new Dictionary<string, List<int>>
@@ -115,38 +99,50 @@ public class CollectionPrintingSnapshotTests
         };
 
         var actual = config.PrintToString(value);
-        var expected = Helper.Read("Dictionary_With_ListValues.txt");
 
-        actual.Should().Be(expected);
+        return Verify(actual, SnapshotSettings);
+    }
+    
+    [Test]
+    public Task PrintToString_ShouldHandleDictionaryWithNull_Correctly()
+    {
+        var config = new PrintingConfig<Dictionary<string, List<int>>>();
+        var value = new Dictionary<string, List<int>?>
+        {
+            ["first"] = null,
+            ["second"] = null
+        };
+
+        var actual = config.PrintToString(value);
+
+        return Verify(actual, SnapshotSettings);
+    }
+    
+    [Test]
+    public Task PrintToString_ShouldHandleListWithNull_Correctly()
+    {
+        var config = new PrintingConfig<Dictionary<string, List<int>>>();
+        var value = new List<string?>()
+        {
+            null,
+            null,
+            null
+        };
+
+        var actual = config.PrintToString(value);
+
+        return Verify(actual, SnapshotSettings);
     }
 
     [Test]
-    public void TeamWithMembers_Snapshot()
+    public Task PrintToString_ShouldHandleListCycle_Correctly()
     {
-        var config = new PrintingConfig<Team>();
-        var team = new Team
-        {
-            Title = "My_Command",
-            Members =
-            {
-                new Person
-                {
-                    Name = "Max",
-                    Scores = [1],
-                    Tags = ["dev"]
-                },
-                new Person
-                {
-                    Name = "Kate",
-                    Scores = [2, 3],
-                    Tags = ["qa"]
-                }
-            }
-        };
+        var config = new PrintingConfig<List<object>>();
+        var value = new List<object>();
+        value.Add(value);
 
-        var actual = config.PrintToString(team);
-        var expected = Helper.Read("Team_With_Members.txt");
+        var actual = config.PrintToString(value);
 
-        actual.Should().Be(expected);
+        return Verify(actual, SnapshotSettings);
     }
 }

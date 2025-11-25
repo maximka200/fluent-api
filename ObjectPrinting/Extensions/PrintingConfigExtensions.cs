@@ -16,11 +16,11 @@ public static class PrintingConfigExtensions
         };
     }
 
-    public static string PrintToString<TOwner>(this PrintingConfig<TOwner> printingConfig, object? obj)
+    public static string PrintToString<TOwner>(this PrintingConfig<TOwner> printingConfig, object obj)
     {
         var sb = new StringBuilder();
         printingConfig.Visited.Clear();
-        obj?.Print(printingConfig, sb, 0);
+        obj.Print(printingConfig, sb, 0);
         return sb.ToString();
     }
 }

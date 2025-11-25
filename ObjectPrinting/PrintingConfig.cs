@@ -13,7 +13,7 @@ public class PrintingConfig<TOwner>
     public HashSet<Type> ExcludedTypes { get; } = [];
     public HashSet<string> ExcludedProperties { get; } = [];
     
-    public readonly HashSet<object> Visited = [];
+    public readonly HashSet<object?> Visited = [];
     public Dictionary<string, int> StringTrimmingRules { get; } = new();
 
     public PrintingConfig<TOwner> Excluding<TProp>()

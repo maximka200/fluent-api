@@ -1,4 +1,4 @@
-Person:
+﻿Person:
 	Name = John
 	Scores = Int32[] [
 		10
@@ -11,8 +11,10 @@ Person:
 	Addresses = Dictionary<String, Address> {
 		[home] = Address:
 			City = Chelyabinsk
+			Street = 
 
 		[work] = Address:
 			City = Sverdlovsk
+			Street = <cyclic reference>
 
 	}

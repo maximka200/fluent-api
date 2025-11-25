@@ -17,7 +17,7 @@ public static class ObjectExtensions
         new DefaultObjectStrategy()
     };
 
-    public static void Print<TOwner>(this object? obj, PrintingConfig<TOwner> config,
+    public static void Print<TOwner>(this object obj, PrintingConfig<TOwner> config,
         StringBuilder sb, int indent)
     {
         if (obj is null)
