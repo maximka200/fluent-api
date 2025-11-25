@@ -9,6 +9,7 @@ public static class ObjectPrinter
         return new PrintingConfig<T>();
     }
     
+    /// <summary> Синтаксический сахар, вызывает сериализацию обьекта с дефолтным конфигом </summary> 
     public static string PrintToString<TOwner>(object obj)
     {
         var printer = new PrintingConfig<TOwner>();
